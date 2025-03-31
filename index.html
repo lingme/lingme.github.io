@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="google-site-verification" content="hiEiQ_Xs8SeBUZkIHvKCLAybdsauUnO9oKYEkicwoBw" />
+    <meta name="baidu-site-verification" content="code-PumhcyGemS" />
+    <meta name="author" content="Lingme">
+    <meta name="description">
+    <link rel="icon" type="image/x-icon" href="https://lingme.github.io/image/blog_love/img_head_round.png">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/index_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <title>Lingme</title>
+</head>
+
+<body>
+    <div id="particles-js"></div>
+    <div class="panel-main">
+        <div class="panel-main__inner panel-inverted">
+            <div class="panel-main__content">
+                <h1 class="panel-cover__title panel-title animate__animated animate__backInDown">
+                    <img id="head_img" src="https://lingme.github.io/image/blog_love/img_head_round.png">
+                </h1>
+                <p class="panel-cover__description animate__animated animate__zoomInUp delay-7">Lingme</p>
+                <div class="navigation-wrapper">
+                    <div class="margin-navigation-button animate__animated animate__backInUp delay-1" onClick="window.location.href='/blog/'">
+                        <i class="fa fa-cube"></i>
+                        <p class="margin-nav-p">Blog</p>
+                    </div>
+
+                    <div class="margin-navigation-button animate__animated animate__backInDown delay-2" onclick="window.location.href='/categories/Project/'">
+                        <i class="fa fa-star-half-o"></i>
+                        <p class="margin-nav-p">Project</p>
+                    </div>
+
+                    <div class="margin-navigation-button animate__animated animate__backInUp delay-3" onclick=openNewWin("https://github.com/lingme")> 
+                        <i class="fa fa-github"></i>
+                        <p class="margin-nav-p">GitHub</p>
+                    </div>
+
+                    <div class="margin-navigation-button animate__animated animate__backInDown delay-4" onclick=openNewWin("/love/")>
+                        <i class="fa fa-heartbeat"></i>
+                        <p class="margin-nav-p">Love</p>
+                    </div>
+
+                    <div class="margin-navigation-button animate__animated animate__backInUp delay-5" onclick=sendMail("mailto:lingmin@sliover.com")>
+                        <i class="fa fa-paper-plane"></i>
+                        <p class="margin-nav-p">Email</p>
+                    </div>
+
+                    <div class="margin-navigation-button animate__animated animate__backInDown delay-6" onclick="window.location.href='/about/'">
+                        <i class="fa fa-bandcamp"></i>
+                        <p class="margin-nav-p">About</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="css/particles.min.js"></script>
+<script type="text/javascript">
+    function openNewWin(url) {
+        window.open(url);
+    }
+
+    function sendMail(url) {
+        window.location = url;
+    }
+
+    particlesJS.load('particles-js', 'css/particlesjs-config.json', function () {
+        console.log('callback - particles.js config loaded');
+    });
+</script>
+
+</html>
