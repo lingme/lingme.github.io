@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>优雅改写 Node Modules - Lingme</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="white"><meta name="application-name" content="Lingme"><meta name="msapplication-TileImage" content="https://lingme.github.io/img/logo.svg"><meta name="msapplication-TileColor" content="white"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Lingme"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" sizes="192x192" href="https://lingme.github.io/img/logo.svg"><meta name="description" content="对于一直在使用 Hexo 框架构建博客的同学来说肯定有这方面那方面定制化 Hexo 框架的需求，那么这就涉及到需要修改 Hexo 的模块文件，也就是 Node Modules，常规的修改手段可能是拷贝一份到自己的项目，然后手动修改 package.json 里头的引用依赖，这种方式短时间看好像没什么问题，部署到生产环境也可以运行，但是长时间来看，暴漏的问题就很多了，你可能只修改了一个文件，甚至几行"><meta property="og:type" content="blog"><meta property="og:title" content="优雅改写 Node Modules"><meta property="og:url" content="https://lingme.github.io/2020/11/09/patch_package/"><meta property="og:site_name" content="Lingme"><meta property="og:description" content="对于一直在使用 Hexo 框架构建博客的同学来说肯定有这方面那方面定制化 Hexo 框架的需求，那么这就涉及到需要修改 Hexo 的模块文件，也就是 Node Modules，常规的修改手段可能是拷贝一份到自己的项目，然后手动修改 package.json 里头的引用依赖，这种方式短时间看好像没什么问题，部署到生产环境也可以运行，但是长时间来看，暴漏的问题就很多了，你可能只修改了一个文件，甚至几行"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://lingme.github.io/image/patch/nodejs-scaled.jpg"><meta property="article:published_time" content="2020-11-09T00:03:21.000Z"><meta property="article:modified_time" content="2025-04-07T14:09:39.364Z"><meta property="article:tag" content="NodeJS"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://lingme.github.io/image/patch/nodejs-scaled.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lingme.github.io/2020/11/09/patch_package/"},"headline":"Lingme","image":["https://lingme.github.io/image/patch/nodejs-scaled.jpg"],"datePublished":"2020-11-09T00:03:21.000Z","dateModified":"2025-04-07T14:09:39.364Z","author":{"@type":"Person","name":null},"description":"对于一直在使用 Hexo 框架构建博客的同学来说肯定有这方面那方面定制化 Hexo 框架的需求，那么这就涉及到需要修改 Hexo 的模块文件，也就是 Node Modules，常规的修改手段可能是拷贝一份到自己的项目，然后手动修改 package.json 里头的引用依赖，这种方式短时间看好像没什么问题，部署到生产环境也可以运行，但是长时间来看，暴漏的问题就很多了，你可能只修改了一个文件，甚至几行"}</script><link rel="canonical" href="https://lingme.github.io/2020/11/09/patch_package/"><link rel="icon" href="https://lingme.github.io/image/blog_love/img_head_round.png"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/blog">博客</a><a class="navbar-item" href="/categories/Project">项目</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Lingme Monitor" href="https://stats.uptimerobot.com/LnXjpuPj6J/786523787"><i class="fas fa-spider"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="https://lingme.github.io/image/patch/nodejs-scaled.jpg" alt="优雅改写 Node Modules"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-11-09T00:03:21.000Z" title="2020-11-09T00:03:21.000Z">2020-11-09</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NodeJS/">NodeJS</a></span><span class="level-item">6 分钟读完 (大约854个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">优雅改写 Node Modules</h1><div class="content"><p>对于一直在使用 <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo">Hexo</a> 框架构建博客的同学来说肯定有这方面那方面定制化 Hexo 框架的需求，那么这就涉及到需要修改 Hexo 的模块文件，也就是 <a target="_blank" rel="noopener" href="https://www.npmjs.com/">Node Modules</a>，常规的修改手段可能是拷贝一份到自己的项目，然后手动修改 <a target="_blank" rel="noopener" href="https://docs.npmjs.com/cli/v6/configuring-npm/package-json">package.json</a> 里头的引用依赖，这种方式短时间看好像没什么问题，部署到生产环境也可以运行，但是长时间来看，暴漏的问题就很多了，你可能只修改了一个文件，甚至几行，但是却要付出很大的版本代价。</p>
+<span id="more"></span>
+
+<p>版本代价源于你无法跟随包的版本更新而自动更新，需要手动得再来一次相同的操作，有同学可能会说了，我自己写一个脚本完成这个流水线工作，没有错，思路非常正确，这也就是今天要介绍的强大模块 - <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/patch-package">Patch Modules</a>。</p>
+<p>这个模块也是完成了这样一个自动化的流水线工作，不过它的工作方式不是全量的，而是基于 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Diff">diff</a> 差异化更新。</p>
+<blockquote>
+<ul>
+<li>  Patch-Package 工作模式</li>
+</ul>
+</blockquote>
+<pre><code>* 1.安装此模块
+* 2.修改需要定制化的模块
+* 3.运行 Patch-Package 的命令，生成 patch 差异文件
+* 4.修改 package.json 的 Script，使其运行 npm install 的时候自动部署差异到模块库
+</code></pre>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><hr>
+<p>我的需求来自需要修改 Hexo 博客框架的类别标签排列，因为我的博客类别列表是这样的：</p>
+<p><img src="https://lingme.github.io/image/patch/car.jpg"></p>
+<p>但是我觉得不太好看，因为我的项目列表有三个子项（公司项目，外包项目，个人项目），这种有子类别的放到中间就不太好看，我希望把这种有子类别的放到后面去，查看源码，发现了生成博客类别列表的 node modules 模块，然后就可以用 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/patch-package">Patch Modules</a> 操作一下了。</p>
+<br/>
+
+<ul>
+<li>  <strong>安装 Patch Package</strong></li>
+</ul>
+<article class="message is-secondary" style="font-size:inherit">
+    <div class="message-body">
+        <i class="fas fa-terminal mr-2"></i>
+        <strong>npm</strong> i patch-package --save-dev
+    </div>
+</article>
+
+<ul>
+<li>  <strong>修改 Node Modules</strong></li>
+</ul>
+<p>修改 Hexo 模块，这里就不贴我的代码了，没有什么参考意义。</p>
+<ul>
+<li>  <strong>运行 Patch Package 命令</strong></li>
+</ul>
+<p>修改完成后，运行如下命令生成 <code>patch</code> 文件：</p>
+<article class="message is-secondary" style="font-size:inherit">
+    <div class="message-body">
+        <i class="fas fa-terminal mr-2"></i>
+        <strong>npx</strong> patch-package <i>your-package-name</i>
+    </div>
+</article>
+
+<p>运行结束后，就会看到项目的根目录里头生成了 <strong>patches</strong> 文件夹，里头有这样一个文件</p>
+<blockquote>
+<p><em>your-package-name</em>+<em>version</em>.<code>patch</code></p>
+</blockquote>
+<ul>
+<li><strong>运行 Package.json 文件</strong><br>  修改 package.json 的 Script，使其运行 npm install 的时候自动部署差异到模块库</li>
+</ul>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">...</span></span><br><span class="line">    <span class="attr">&quot;scripts&quot;:</span> &#123;</span><br><span class="line">        <span class="string">...</span></span><br><span class="line">        <span class="attr">&quot;postinstall&quot;:</span> <span class="string">&quot;patch-package&quot;</span></span><br><span class="line">        <span class="string">...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="string">...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>重新安装模块</strong><br>  修改完成后，如果直接运行 <strong>npm install</strong> 或者 <strong>npm install –force</strong>，都会出现错误，<strong>Patch Package</strong> 会提示你删除掉 <strong>node_modules</strong> 文件夹以后重试，我们按照他说的要求删除以后，重新运行 <strong>npm install –no-save</strong>，就会出现成功提示。</li>
+</ul>
+<p><img src="https://lingme.github.io/image/patch/success.jpg"></p>
+<p>然后重新运行 <strong>hexo server</strong> 命令，重新查看博客，就会看到修改已经生效了</p>
+<p><img src="https://lingme.github.io/image/patch/fix.jpg"></p>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NodeJS/">NodeJS</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/11/20/oauth2/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">OAuth 2.0</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/11/08/dotnet_grpc/"><span class="level-item">.NET Core With gRpc</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div class="content" id="valine-thread"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/valine/1.4.14/Valine.min.js"></script><script>new Valine({
+            el: '#valine-thread' ,
+            appId: "qAUouJa9IYIfk3BMvvEMWNPs-gzGzoHsz",
+            appKey: "QFwWDrrTN4TMWILj78u7XdK5",
+            
+            avatar: "mm",
+            avatarForce: true,
+            meta: ["nick","mail"],
+            pageSize: 10,
+            lang: "zh-CN",
+            visitor: true,
+            highlight: true,
+            
+            
+            
+            
+            
+            requiredFields: [],
+        });</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://lingme.github.io/image/blog_love/img_head_round.png" alt="Lingme"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Lingme</p><br><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>ShenZhen, China</span></p></div></div></nav></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/NET/"><span class="level-start"><span class="level-item">.NET</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/CI-CD/"><span class="level-start"><span class="level-item">CI/CD</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/JavaScript/"><span class="level-start"><span class="level-item">JavaScript</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/NodeJS/"><span class="level-start"><span class="level-item">NodeJS</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Prism/"><span class="level-start"><span class="level-item">Prism</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/QT/"><span class="level-start"><span class="level-item">QT</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Script/"><span class="level-start"><span class="level-item">Script</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/WPF/"><span class="level-start"><span class="level-item">WPF</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Project/"><span class="level-start"><span class="level-item">Project</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a><p class="is-size-7"><span>&copy; 2017-2025</span> Lingme Powered by <a href="https://github.com/hexojs/hexo" target="_blank">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Theme based on iCarus" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fas fa-circle-notch"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "block",
+        static: false,
+        position: "bottom-right",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery.min.js" defer></script><script src="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

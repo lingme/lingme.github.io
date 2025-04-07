@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Typora 图片自动上传阿里OSS - Lingme</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="white"><meta name="application-name" content="Lingme"><meta name="msapplication-TileImage" content="https://lingme.github.io/img/logo.svg"><meta name="msapplication-TileColor" content="white"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Lingme"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" sizes="192x192" href="https://lingme.github.io/img/logo.svg"><meta name="description" content="Typora AliyunOSS 运行正常，但不再维护        Typora 近期的新版本带来了图片上传自定义命令的支持，也就是说如果不想使用图床或者 uPic 的同学们，可以自己写命令了，我也是第一时间去对接了这个功能，毕竟我是重度 Typora 使用者，无论是公司的文档还是博客，我都是使用 Typora，当时想了一下应该用什么语言写呢？Java？.NET？C+"><meta property="og:type" content="blog"><meta property="og:title" content="Typora 图片自动上传阿里OSS"><meta property="og:url" content="https://lingme.github.io/2020/05/08/TyporaAutoUploadShell/"><meta property="og:site_name" content="Lingme"><meta property="og:description" content="Typora AliyunOSS 运行正常，但不再维护        Typora 近期的新版本带来了图片上传自定义命令的支持，也就是说如果不想使用图床或者 uPic 的同学们，可以自己写命令了，我也是第一时间去对接了这个功能，毕竟我是重度 Typora 使用者，无论是公司的文档还是博客，我都是使用 Typora，当时想了一下应该用什么语言写呢？Java？.NET？C+"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_10.03.26_PM.png"><meta property="article:published_time" content="2020-05-08T00:03:21.000Z"><meta property="article:modified_time" content="2025-04-07T14:09:39.363Z"><meta property="article:tag" content="Shell"><meta property="article:tag" content="Typora"><meta property="article:tag" content="Script"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_10.03.26_PM.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lingme.github.io/2020/05/08/TyporaAutoUploadShell/"},"headline":"Lingme","image":["https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_10.03.26_PM.png"],"datePublished":"2020-05-08T00:03:21.000Z","dateModified":"2025-04-07T14:09:39.363Z","author":{"@type":"Person","name":null},"description":"Typora AliyunOSS 运行正常，但不再维护        Typora 近期的新版本带来了图片上传自定义命令的支持，也就是说如果不想使用图床或者 uPic 的同学们，可以自己写命令了，我也是第一时间去对接了这个功能，毕竟我是重度 Typora 使用者，无论是公司的文档还是博客，我都是使用 Typora，当时想了一下应该用什么语言写呢？Java？.NET？C+"}</script><link rel="canonical" href="https://lingme.github.io/2020/05/08/TyporaAutoUploadShell/"><link rel="icon" href="https://lingme.github.io/image/blog_love/img_head_round.png"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/blog">博客</a><a class="navbar-item" href="/categories/Project">项目</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Lingme Monitor" href="https://stats.uptimerobot.com/LnXjpuPj6J/786523787"><i class="fas fa-spider"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_10.03.26_PM.png" alt="Typora 图片自动上传阿里OSS"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-05-08T00:03:21.000Z" title="2020-05-08T00:03:21.000Z">2020-05-08</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Script/">Script</a></span><span class="level-item">5 分钟读完 (大约711个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Typora 图片自动上传阿里OSS</h1><div class="content"><article class="message message-immersive is-danger">
+    <div class="message-body">
+        <i class="fas fa-exclamation-triangle mr-2"></i><a target="_blank" rel="noopener" href="https://github.com/lingme/Typora-AliyunOSS-AutoUpload-Shell">Typora AliyunOSS</a> 运行正常，但不再维护
+    </div>
+</article>
+
+<p>Typora 近期的新版本带来了图片上传自定义命令的支持，也就是说如果不想使用图床或者 uPic 的同学们，可以自己写命令了，我也是第一时间去对接了这个功能，毕竟我是重度 Typora 使用者，无论是公司的文档还是博客，我都是使用 Typora，当时想了一下应该用什么语言写呢？Java？.NET？C++? 好像都太重了，最后决定用 Shell 或者 Python，但是想了一下 Python 还要装环境，还是直接 Shell 吧，那仓库的选择还是阿里云 OSS 吧，价格便宜安心，现在感觉已经无法信任一些第三方的图床了，图片只有保存在自己云上面才安心，接下来就来说一下如何使用。</p>
+<span id="more"></span>
+
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><hr>
+<ul>
+<li>  请先下载本仓库的 <a target="_blank" rel="noopener" href="https://github.com/lingme/Typora-AliyunOSS-AutoUpload-Shell/blob/master/AliyunOssAutoUpload.sh"><strong>AliyunOssAutoUpload.sh</strong></a></li>
+<li>  <code>Windows</code> 系统请下载（MacOS 和 Linux 不需要） <a target="_blank" rel="noopener" href="https://git-scm.com/downloads"><strong>Git</strong></a></li>
+</ul>
+<h2 id="脚本配置"><a href="#脚本配置" class="headerlink" title="脚本配置"></a>脚本配置</h2><hr>
+<p>下载完成后，请打开 shell 文件，然后做如下配置</p>
+<figure class="highlight sh"><figcaption><span>AliyunOssAutoUpload.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">host        = <span class="string">&quot;your-oss-host&quot;</span></span><br><span class="line">bucket      = <span class="string">&quot;your-oss-bucket&quot;</span></span><br><span class="line"><span class="built_in">id</span>          = <span class="string">&quot;your-oss-AccessKey ID&quot;</span></span><br><span class="line">key         = <span class="string">&quot;your-oss-AccessKey Secret Key&quot;</span></span><br><span class="line">cloudFolder = <span class="string">&quot;your-oss-folder&quot;</span></span><br></pre></td></tr></table></figure>
+
+<article class="message is-info" style="font-size:inherit">
+    <div class="message-body">
+        <strong>your-oss-host</strong>
+    </div>
+</article>
+
+<p><img src="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_8.43.48_PM.png" alt="阿里云 OSS EndPoint（地域节点）地址，可以在 OSS 控制台的 Bucket 列表-&gt;概述"></p>
+<article class="message is-info" style="font-size:inherit">
+    <div class="message-body">
+        <strong>your-oss-bucket</strong>
+    </div>
+</article>
+
+<p><img src="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_8.45.10_PM.png" alt="阿里云OSS Bucket名称"></p>
+<article class="message is-info" style="font-size:inherit">
+    <div class="message-body">
+        <strong>your-oss-AccessKey ID</strong><br>
+        <strong>your-oss-AccessKey Secret Key</strong>
+    </div>
+</article>
+
+<p><img src="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_8.50.38_PM.png" alt="找到 Access Key 入口"></p>
+<p><img src="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_8.52.46_PM.png" alt="这里就可以看到 AccessKey ID 和 AccessKey Secret"></p>
+<article class="message is-info" style="font-size:inherit">
+    <div class="message-body">
+        <strong>your-oss-folder</strong>
+    </div>
+</article>
+
+<p><img src="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_8.58.22_PM.png" alt="需要保存图片的阿里云 OSS 目录"></p>
+<h3 id="例如"><a href="#例如" class="headerlink" title="例如"></a>例如</h3><ul>
+<li>  cloudFolder=”ME”</li>
+<li>  cloudFolder=”ME/Demo”</li>
+</ul>
+<h2 id="Typora-配置"><a href="#Typora-配置" class="headerlink" title="Typora 配置"></a>Typora 配置</h2><hr>
+<article class="message is-danger" style="font-size:inherit">
+    <div class="message-body">
+        <p>我这里的示例是当前地址，正确的配置需要绝对地址</p>
+    </div>
+</article>
+
+<figure class="highlight sh"><figcaption><span>需要设置运行权限</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> 777 AliyunOssAutoUpload.sh</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><figcaption><span>MacOS & Linux Typora 的 Command 设置</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./AliyunOssAutoUpload-Safety.sh</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_9.06.33_PM.png" alt="MacOS &amp; Linux"></p>
+<article class="message is-danger" style="font-size:inherit">
+    <div class="message-body">
+        <p>由于 Windows 缺失 Shell 解释器，所以需要前面安装的 Git，因为 Git 自带 sh 解释器</p>
+    </div>
+</article>
+
+<figure class="highlight shell"><figcaption><span>Windows Typora 的 Command 设置</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;C:\Program Files\Git\bin\sh.exe&quot; &quot;Z:\Code\Typora-AliyunOSS-AutoUpload-Shell\AliyunOssAutoUpload.sh&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lingme.github.io/image/uPic/Screen_Shot_2020-05-10_at_9.14.59_PM.png" alt="Windows"></p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><hr>
+<p>完成上面的步骤就可以愉快的使用了，但是保险起见，可以运行一下 Typora 自带的测试工具，就在刚刚的设置页面里头，点击 <strong>Test Uploader</strong> 开始测试</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><hr>
+<p>直接复制图片或者拖动到 Typora 编辑区域，图片将自动完成上传并且引用，这里是哔哩哔哩的视频演示</p>
+<iframe src="//player.bilibili.com/player.html?bvid=BV1mt4y1y7Pn&page=1" style="width:100%;aspect-ratio:16/9;" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="100%"> </iframe>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Shell/">Shell</a><a class="link-muted mr-2" rel="tag" href="/tags/Typora/">Typora</a><a class="link-muted mr-2" rel="tag" href="/tags/Script/">Script</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/08/24/QT-Install-Framework/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">QT Installer Framework</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/05/01/HelloBlazor/"><span class="level-item">你好，Blazor</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div class="content" id="valine-thread"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/valine/1.4.14/Valine.min.js"></script><script>new Valine({
+            el: '#valine-thread' ,
+            appId: "qAUouJa9IYIfk3BMvvEMWNPs-gzGzoHsz",
+            appKey: "QFwWDrrTN4TMWILj78u7XdK5",
+            
+            avatar: "mm",
+            avatarForce: true,
+            meta: ["nick","mail"],
+            pageSize: 10,
+            lang: "zh-CN",
+            visitor: true,
+            highlight: true,
+            
+            
+            
+            
+            
+            requiredFields: [],
+        });</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://lingme.github.io/image/blog_love/img_head_round.png" alt="Lingme"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Lingme</p><br><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>ShenZhen, China</span></p></div></div></nav></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/NET/"><span class="level-start"><span class="level-item">.NET</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/CI-CD/"><span class="level-start"><span class="level-item">CI/CD</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/JavaScript/"><span class="level-start"><span class="level-item">JavaScript</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/NodeJS/"><span class="level-start"><span class="level-item">NodeJS</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Prism/"><span class="level-start"><span class="level-item">Prism</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/QT/"><span class="level-start"><span class="level-item">QT</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Script/"><span class="level-start"><span class="level-item">Script</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/WPF/"><span class="level-start"><span class="level-item">WPF</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Project/"><span class="level-start"><span class="level-item">Project</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a><p class="is-size-7"><span>&copy; 2017-2025</span> Lingme Powered by <a href="https://github.com/hexojs/hexo" target="_blank">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Theme based on iCarus" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fas fa-circle-notch"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "block",
+        static: false,
+        position: "bottom-right",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery.min.js" defer></script><script src="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

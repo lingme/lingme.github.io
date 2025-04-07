@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>.NET框架到底是什么？ - Lingme</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="white"><meta name="application-name" content="Lingme"><meta name="msapplication-TileImage" content="https://lingme.github.io/img/logo.svg"><meta name="msapplication-TileColor" content="white"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Lingme"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" sizes="192x192" href="https://lingme.github.io/img/logo.svg"><meta name="description" content="最近在面试大厂中，面试官频繁的问到一个问题，**.NET 框架是什么？怎么运行？**可以详细解释一下吗？还好之前看过《CLR VIA C#》这本著作，还是可以回答上的，现在想通过这次机会写一篇系统的文章来介绍一下。"><meta property="og:type" content="blog"><meta property="og:title" content=".NET框架到底是什么？"><meta property="og:url" content="https://lingme.github.io/2020/01/07/dotnet_framework/"><meta property="og:site_name" content="Lingme"><meta property="og:description" content="最近在面试大厂中，面试官频繁的问到一个问题，**.NET 框架是什么？怎么运行？**可以详细解释一下吗？还好之前看过《CLR VIA C#》这本著作，还是可以回答上的，现在想通过这次机会写一篇系统的文章来介绍一下。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://lingme.github.io/image/net_framework/what_is_.net_cover.jpeg"><meta property="article:published_time" content="2020-01-07T00:03:21.000Z"><meta property="article:modified_time" content="2025-04-07T14:09:39.363Z"><meta property="article:tag" content="Dotnet"><meta property="article:tag" content="CSharp"><meta property="article:tag" content="CLI"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://lingme.github.io/image/net_framework/what_is_.net_cover.jpeg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lingme.github.io/2020/01/07/dotnet_framework/"},"headline":"Lingme","image":[],"datePublished":"2020-01-07T00:03:21.000Z","dateModified":"2025-04-07T14:09:39.363Z","author":{"@type":"Person","name":null},"description":"最近在面试大厂中，面试官频繁的问到一个问题，**.NET 框架是什么？怎么运行？**可以详细解释一下吗？还好之前看过《CLR VIA C#》这本著作，还是可以回答上的，现在想通过这次机会写一篇系统的文章来介绍一下。"}</script><link rel="canonical" href="https://lingme.github.io/2020/01/07/dotnet_framework/"><link rel="icon" href="https://lingme.github.io/image/blog_love/img_head_round.png"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/blog">博客</a><a class="navbar-item" href="/categories/Project">项目</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Lingme Monitor" href="https://stats.uptimerobot.com/LnXjpuPj6J/786523787"><i class="fas fa-spider"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="https://lingme.github.io/image/net_framework/what_is_.net_cover.jpeg" alt=".NET框架到底是什么？"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-01-07T00:03:21.000Z" title="2020-01-07T00:03:21.000Z">2020-01-07</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NET/">.NET</a></span><span class="level-item">1 小时读完 (大约9345个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">.NET框架到底是什么？</h1><div class="content"><p>最近在面试大厂中，面试官频繁的问到一个问题，**.NET 框架是什么？怎么运行？**可以详细解释一下吗？还好之前看过《CLR VIA C#》这本著作，还是可以回答上的，现在想通过这次机会写一篇系统的文章来介绍一下。</p>
+<span id="more"></span>
+
+<h2 id="1-序章"><a href="#1-序章" class="headerlink" title="1. 序章"></a>1. 序章</h2><p>我们从最简单的一个 C# Hello World 开始我们的长篇大论，打开你的 Visual Studio，新建一个 C# Framework Console 控制台程序，输入学习每个语言的第一步“Hello World”</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">ConsoleApp1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>点击 VS Debug 运行，你不会看到 Hello world，控制台程序会一闪而过然后 VS 结束调试，因为执行完 Hello World 之后并没有任何语句，程序的生命周期结束了，好了不要纠结这么多的了，只要知道这段代码会输出一段文字到屏幕上就可以了，让我们来引入问题，虽然只是短短的几行代码，但是有几个问题应该值得思考。</p>
+<blockquote>
+<p>1.将字符输出到屏幕，需要调用 Console.WriteLine()方法。这个 Console 类型从何而来呢？</p>
+<p>2.如果创建一个 VB.NET 类型的项目，实现和上面 C#项目完全一样的功能，那么编译后生成的文件有什么区别？</p>
+<p>3.生成的文件在系统中是如何运行起来的？</p>
+<p>4.其机制和使用传统 VC++生成的可执行文件是否相同？</p>
+</blockquote>
+<p>有了这些问题，我们就可以开扯了。</p>
+<h2 id="2-CIL-公共中间语言"><a href="#2-CIL-公共中间语言" class="headerlink" title="2. CIL - 公共中间语言"></a>2. CIL - 公共中间语言</h2><p>Common Intermediate Language</p>
+<hr>
+<p>首先要了解的就是 C#程序源码在编译之后会得到什么样的一个文件，过去使用 VC++生成的可执行文件，经过预编译、编译、汇编、链接几个步骤后，最终生成的可执行文件中就已经包含了处理器的本地代码（Native Code），支持它运行的只是操作系统和本地的机器指令集。那么采用 C#编译器生成的文件又是什么呢？现在需要引入程序集这个概念：在.NET 框架下，类似 C#这样的高级语言经过编译后生成的结果文件被称做程序集，其后缀名是.dll（类库）或.exe（可执行程序）。在引入这个概念之前，都是用<strong>文件</strong>这个词来描述的。</p>
+<p>我们使用<strong>IL DASM</strong>打开序章编写的 Hello World EXE 程序（不知道 IL DASM 在哪里的同学可以在一下目录找到，VS 版本不同，目录不同）</p>
+<blockquote>
+<p>‪C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\ildasm.exe</p>
+</blockquote>
+<p>打开 <strong>Main:void(string [])</strong></p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-02-29%20at%208.42.30%20PM.png"></p>
+<p>会看到如图所示的类似汇编语言的代码，还会看到熟悉的“Hello World”，我们先不着急解释。</p>
+<blockquote>
+<p>继续开始下一个步骤，我们用 Visual Studio 创建一个 VB.NET 程序，输入 VB 代码</p>
+</blockquote>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Module</span> Module1</span><br><span class="line">    <span class="keyword">Sub</span> Main()</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    <span class="keyword">End</span> <span class="keyword">Sub</span></span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Module</span></span><br></pre></td></tr></table></figure>
+
+<p>用 <strong>IL DASM</strong> 打开 <strong>Module –&gt; Main:void()</strong></p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-02-29%20at%208.58.23%20PM.png"></p>
+<p>可以看到 IL 反编译 VB EXE 出来的代码与上面 C# .NET 创建的应用程序的代码几乎是一摸一样的，除了主应用程序函数入口不同。</p>
+<p>至此，可以得到一个初步的推断：不管是 VB.NET 还是是 C#，编译之后的程序集都能够用 IL DASM 打开，因此它们生成的程序集的格式都是相同的；当程序所实现的功能相同时，程序集所包含的 CIL 代码也是类似的。</p>
+<p>现在对上面程序集中所包含的类似汇编的语言做一下介绍，即是本节标题中的 CIL（Common Intermediate Language，公共中间语言）。CIL 最初是随着.NET 由微软一起发布的，因此之前也叫做 MSIL（Microsoft Intermediate Language），后来进行了标准化，之后便被称做 CIL。在一些书或文章中，<strong>CIL</strong>也会简写为<strong>IL</strong>，其实都是指同样的东西。为了避免混淆，本书统一用<strong>CIL</strong>这个缩写。</p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-02-29%20at%209.19.54%20PM.png"></p>
+<p>接下来再深入地分析一下，公共中间语言这个术语到底包含了哪几层含义。</p>
+<blockquote>
+<h4 id="公共"><a href="#公共" class="headerlink" title="公共"></a><strong>公共</strong></h4><p>因为不论是 C#语言也好，VB.NET 语言也好，C++/CLI 语言也好，甚至是重新开发的一套以自己的名字缩写命名的语言，只要它期望运行的目标平台是.NET，在经过相应的编译器编译之后，所生成的程序集就是由 CIL 语言代码描述的。</p>
+</blockquote>
+<blockquote>
+<h4 id="中间"><a href="#中间" class="headerlink" title="中间"></a><strong>中间</strong></h4><p>这个词也是大有深意，为什么不叫公共机器语言（Common Machine Language），或者公共本地语言（Common Native Language）？因为这种语言只是比我们使用的高级语言，比如 C#低级一点，并不是 CPU 可以直接执行的本地机器语言。这种语言还需要.NET 运行时（.Net runtime）环境的支持，在执行之前，进行一个被称为 Just-in-time（即时）的二次编译过程，才能转变成计算机可以识别的指令。关于.NET 运行时，以及详细过程后面再介绍，现在只要知道，这个文件所包含的 CIL 代码并非机器可以直接执行的指令代码。</p>
+</blockquote>
+<blockquote>
+<h4 id="语言"><a href="#语言" class="headerlink" title="语言"></a><strong>语言</strong></h4><p>CIL 不过是一种程序语言，只不过相对于 C#来说，它是一种更低级语言。从上面的代码截图中，已经可以看到，CIL 是一种基于堆栈的语言，同时，它提供了 class、interface、继承、多态等诸多面向对象的语言特性，因此它又是完全面向对象的语言。如果愿意，甚至可以直接编写 CIL 代码，并且使用 CIL 的编译工具 IL ASM（IL Assembler，IL 汇编程序）来对它进行编译。只不过，和大多数低级语言一样，这种方式会使开发效率会变得很低。这里注意区别一下 IL ASM 和 IL DASM，它们的拼写是不同的。</p>
+</blockquote>
+<p>为了增加大家的理解，我们尝试自己写一段 <strong>CIL 代码</strong> 吧，并且使用<strong>IL ASM</strong>工具对其进行编译，得到和前面一样的 Hello World 程序。</p>
+<p>打开文本编辑器，输入以下代码，然后将其保存为 <strong>HelloWorld.il</strong></p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">.assembly <span class="keyword">extern</span> mscorlib&#123;&#125;</span><br><span class="line">.assembly ConsoleApp&#123;&#125;</span><br><span class="line">.module ConsoleApp.exe</span><br><span class="line">.<span class="keyword">class</span> <span class="keyword">public</span> auto ansi Program extends System.Object</span><br><span class="line">&#123;</span><br><span class="line">    .<span class="function">method <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        .entrypoint</span><br><span class="line">        nop</span><br><span class="line">        ldstr <span class="string">&quot;Hello, World!&quot;</span></span><br><span class="line">        call <span class="keyword">void</span> [mscorlib]System.Console::WriteLine(<span class="built_in">string</span>)</span><br><span class="line">        nop</span><br><span class="line">        ret</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打开 Visual Studio 命令行工具，不知道位置的同学请到下面的目录找到（VS 版本不同，目录不同）</p>
+<blockquote>
+<p>“C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise&quot;</p>
+</blockquote>
+<p>然后运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ilasm HelloWorld.il</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-02-29%20at%209.55.03%20PM.png"></p>
+<p>成功后会看到 HelloWorld.exe 程序，它的执行结果和上面用 C#编写的完全一样。</p>
+<p>由于程序集是由 CIL 语言所描述的，因此 CIL 也叫做程序集语言（Assembly Language）。又因为.NET 程序集需要由.NET 运行时加载才能运行，可以视其为由.NET 运行时进行管理的，所以 CIL 代码也叫做托管代码（Managed Code）。相对的，不需要.NET 运行时就可以执行的代码就叫做非托管代码（Unmanaged Code）。</p>
+<p>好了，已经知道了 CIL 的存在，从现在开始，最好在头脑里建立起两个模型或两种视角：一种是基于 C#或其他高级语言的源程序的视角，一种是基于 CIL 中间语言的程序集视角。C#源程序在被编译为程序集以后，就独立于 C#，因此程序集可以由其他种类的语言所调用；同时，因为程序集并没有包含本地机器的指令，所以它与具体的机器类型也分隔开了，可以被装有.NET 框架的任何机器运行。</p>
+<h2 id="3-BCL-基类库"><a href="#3-BCL-基类库" class="headerlink" title="3. BCL - 基类库"></a>3. BCL - 基类库</h2><p>Base Class Library</p>
+<hr>
+<p>再次打开前面创建的 C# Hello World 控制台项目（ConsoleApp），然后在解决方案面板下打开“References”</p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-03-01%20at%209.58.44%20AM.png"></p>
+<p>我们会看这些引用，在创建项目时并没有做任何额外的操作，那么这些引用显然是在创建项目时自动添加的，都是微软认为很常用的，几乎是每个项目都会使用到的，所以在创建项目时自动添加了进来，免得开发者再手动进行添加。</p>
+<p>那么我们删除掉这些引用会发生什么呢？好的，那我们尝试一下。</p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-03-01%20at%2010.13.26%20AM.png"></p>
+<p>可能有人会认为，在删掉这些引用之后，编译器将会毫不客气地提示编译错误：未能找到类型或命名空间“System”（是否缺少 using 指令或程序集引用？）。可实际上，当编译并运行上面的代码时，程序会正确无误地执行。这是因为我们已经删掉了所有引用的程序集，只定义了一个 Program 类型，并没有定义 Console 类型，所以此时要面对的第一个问题就是：Console 类型从哪里来？</p>
+<p>Visual Studio 提供了一个快捷的办法使我们可以快速查看类型：将光标定位在 Console 上，然后按下键盘上的 F12，就可以看到 Console 的类型定义。在 Console 类型定义的最上方，可以看到它所在的程序集地址:</p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-03-01%20at%2010.17.06%20AM.png"></p>
+<blockquote>
+<p>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework.NETFramework\v4.7.2\mscorlib.dll</p>
+</blockquote>
+<p>可以看到 Console 类型来自于 mscorlib.dll 这个程序集。从上面的实验可以看出，不管我们是否引用 mscorlib.dll 程序集，它总是会自动引用进来。这个程序集中所包含的类库，即是本节标题中的<strong>BCL（Base Class Library，基类库）</strong>。从名字就可以看出来，这个类库包含的都是些最基本的类型，其本身已经与 CIL 语言融为一提了，为 CIL 语言提供基础的编程支持，以至于该类库已经成为了 CLI 标准的一部分（后面会介绍，因此也可以说 BCL 中的类型就是 CIL 语言的类型，所有面向 CIL 的语言都能够使用它们。我们可以使用对象浏览器（Visual Studio→View→Object Browser）来查看 mscorlib.dll 程序集中都包含了哪些命名空间和类型</p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-03-01%20at%2010.22.35%20AM.png"></p>
+<p>我们继续看到 Hello World 项目引用的 System(前面删掉了，请大家重新引用回来)，我们也用对象浏览器看看它里头有什么</p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-03-01%20at%2010.31.55%20AM.png"></p>
+<p>看到以后发现其中所包含的内容类型与 mscorlib 中的类型十分相似,这又是怎么回事呢？实际上，只要点开 System 命名空间就会发现，mscorlib.dll 的 System 命名空间下面定义的类型和 System.dll 的 System 命名空间下面定义的类型完全不同，它们之间并没有冲突之处。</p>
+<p>现在就明白了：BCL 提供了像 Console 这样的类型来支持开发者编写类似控制台这样的程序。</p>
+<p>既然已经思考了这么多，不妨再深入一下，思考这样一个问题：写下的这条语句 string text = “hello, world !”，其中的 string 从哪里来？从直觉来看，string 在 Visual Studio 中以深蓝色呈现，属于 C#的关键字，那么它应该是 C#提供的内置类型。可是，当我们将光标移动到 string 上并按下 F12 时，转到 string 的定义时，看到的却是下面这样的内容：</p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-03-01%20at%2010.38.03%20AM.png"></p>
+<p>注意最上方的程序集地址，再次看到了 mscorlib.dll，并且 String 类型与 Console 类型一样，同位于 System 命名空间下。由此可见，C#的关键字 string，不过是<strong>BCL</strong>中 System.String 类型的一个别名而已。类似地，VB.NET 中的 String 关键字也是 BCL 中的 System.String 类型的别名。因此，在.NET 框架中，语言从本质上来说没有太大的区别，更多的区别是在语法方面。从上面的例子也可以看出，C#和 VB.NET 的很多语言能力并不是自己的，而是从 CIL“借”过来的这样做也保证了在不同语言中相应类型的行为是一致的。</p>
+<p>我深入探究了一下，不同语言和 CIL 类型的对应关系，我这里列出几个，大家可以看一下：</p>
+<table>
+<thead>
+<tr>
+<th>CIL</th>
+<th>C#</th>
+<th>VB.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>System.Byte</td>
+<td>byte</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>Sytem.Int16</td>
+<td>short</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>System.Int64</td>
+<td>long</td>
+<td>Long</td>
+</tr>
+</tbody></table>
+<p>从上面的表看到了几种对应关系，NET 同时也对语言开发者提供支持.如你需要设计一款语言，那么在开发编译器时将语言的关键字映射为 CIL 中的类型就可以了，也就是说，对自己语言中的一些特殊符号（关键字）进行映射处理，就好像 C#中的关键字 int 和 string 一样。</p>
+<p>大家可能听说过这样一种特殊的类型——基元类型(Primitive Type)。实际上，讲到这里大家应该已经明白了，那些由编译器直接支持，将语言本身的关键字类型转换为 CIL 类型的，就叫做基元类型。显然，上面的 byte、int、string 都是基元类型。而 C#中并没有一个关键字去映射 Console，所以我们认为 Console 只是普通的类类型（Class Type）。</p>
+<h2 id="4-FCL-框架类库"><a href="#4-FCL-框架类库" class="headerlink" title="4. FCL - 框架类库"></a>4. FCL - 框架类库</h2><p>Framework Class Library</p>
+<hr>
+<p>作为一名.NET 程序员，每天都要打交道的就是 FCL 了（Framework Class Library，框架类库）。在上一节中介绍了 BCL，它是 FCL 的一个子集。BCL 中包含了与编译器及 CIL 语言关系紧密的核心类型，以及常见开发任务中都会使用到的类型。而 FCL 包含的内容极多。</p>
+<p>从功能上来看，可以将 FCL 框架类库划分成以下几层。</p>
+<blockquote>
+<h4 id="最内一层"><a href="#最内一层" class="headerlink" title="最内一层"></a><strong>最内一层</strong></h4><p>由 BCL 的大部分组成，主要作用是对.NET 框架、.NET 运行时及 CIL 语言本身进行支持，例如基元类型、集合类型、线程处理、应用程序域、运行时、安全性、互操作等。</p>
+</blockquote>
+<blockquote>
+<h4 id="中间一层"><a href="#中间一层" class="headerlink" title="中间一层"></a><strong>中间一层</strong></h4><p>包含了对操作系统功能的封装，例如文件系统、网络连接、图形图像、XML 操作等。</p>
+</blockquote>
+<blockquote>
+<h4 id="最外一层"><a href="#最外一层" class="headerlink" title="最外一层"></a><strong>最外一层</strong></h4><p>包含各种类型的应用程序，例如 WinForms、Asp.NET、WPF、WCF、WF、UWP 等。</p>
+</blockquote>
+<h2 id="5-CTS-公共类型系统"><a href="#5-CTS-公共类型系统" class="headerlink" title="5. CTS - 公共类型系统"></a>5. CTS - 公共类型系统</h2><p>Common Type System</p>
+<hr>
+<p>假设要开发一套新的语言，这种语言和 C#或 VB.NET 一样，在编译后也能够生成 CIL 代码，也可以在.NET 环境下运行，那么首先需要什么呢？</p>
+<p>根据 3 中所讲述的内容知道，要开发的新语言相当于 CIL 的高级语言版本，所以实际上要做什么并不是由新语言决定的，而是由 CIL 来决定的。因此，需要一套 CIL 的定义、规则或标准。这套规则定义了我们的语言可以做什么，不可以做什么，具有哪些特性。这套规则就称作 CTS（Common Type System，公共类型系统）。任何满足了这套规则的高级语言就可以称为面向.NET 框架的语言。C#和 VB.NET 不过是微软自己开发的一套符合了 CTS 的语言，实际上还有很多的组织或团体，也开发出了这样的语言，比如 Delphi.Net、FORTRAN 等。</p>
+<p>那么 CTS 具体包括哪些内容呢？在回答这个问题之前我们需要弄清楚一个概念。还是通过一段 C#代码来说明，先看下面几行代码：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Zonx</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">Zonx item1 = <span class="keyword">new</span> Zonx();</span><br><span class="line">Zonx item2 = <span class="keyword">new</span> Zonx();</span><br></pre></td></tr></table></figure>
+
+<p>我们用文字描述上面的代码，可以说 <strong>Zonx</strong> 是类类型（class type），item1，item2 都是这个类的实例（example）。</p>
+<p>类似的，还有枚举类型（Enum Type）、结构类型（(Struct Type）等。现在大家应该明白这里要表达的意思了，CTS 规定了可以在语言中定义诸如类、结构、委托等类型，这些规则定义了语言中更高层次的内容。因此，在 C#这个具体的语言实现中，我们才可以去定义类类型（Class Type）或者结构类型（Struct Type）等。</p>
+<p>同样，可以在 Book 类中定义一个字段 name 并提供一个方法 ShowName()。实际上，这些也是 CTS 定义的，它规范了类型中可以包含字段（filed）、属性（property）、方法（method）、事件（event）等。</p>
+<p>除了定义各种类型外，CTS 还规定了各种访问性，比如 Private、Public、Family（C#中为 Protected）、Assembly(C#中为 internal)、Family and assembly(C#中没有提供实现)、Family or assembly(C#中为 protected internal)。</p>
+<p>CTS 还定义了一些约束，例如，所有类型都隐式地继承自 System.Object 类型，所有类型都只能继承自一个基类。从 CTS 的名称和公共类型系统可以看出，不仅 C#语言要满足这些约束，所有面向.NET 的语言都需要满足这些约束。众所周知，传统 C++是可以继承自多个基类的。为了让熟悉 C++语言的开发者也能在.NET 框架上开发应用程序，微软推出了面向.NET 的 C++/CLI 语言（也叫托管 C++），它就是符合 CTS 的 C++改版语言，为了满足 CTS 规范，它被限制为了只能继承自一个基类。</p>
+<p>关于上面内容有两点需要特别说明：</p>
+<blockquote>
+<p>C#并没有提供 Family and assembly 的实现，C#中也没有全局方法(Global Method)。换言之，C#只实现了 CTS 的一部分功能。，也就是说，CTS 规范了语言能够实现的所有能力，但是符合 CTS 规范的具体语言实现不一定要实现 CTS 规范所定义的全部功能。</p>
+</blockquote>
+<blockquote>
+<p>C++/CLI 又被约束为只能继承自一个基类，换言之，C++中的部分功能被删除了。任何语言要符合 CTS，其中与 CTS 不兼容的部分功能都要被舍弃。</p>
+</blockquote>
+<p>显然，由于 CIL 是.NET 运行时所能理解的语言，因此它实现了 CTS 的全部功能。虽然它是一种低级语言，但是实际上，它所具有的功能更加完整。C#语言和 CIL 的关系，可以用下图表示：</p>
+<p><img src="https://lingme.github.io/image/net_framework/10.png"></p>
+<h2 id="6-CLS-公共语言规范"><a href="#6-CLS-公共语言规范" class="headerlink" title="6. CLS - 公共语言规范"></a>6. CLS - 公共语言规范</h2><p>Common Language Specification</p>
+<hr>
+<p>既然已经理解了 CTS 是一套语言的规则定义，就可以开发一套语言来符合 CTS 了。假设这个语言叫做 N#，它所实现的 CTS 非常有限，仅实现了其中很少的一部分功能，它与 CTS 和 C#语言的关系可能如图</p>
+<p><img src="https://lingme.github.io/image/net_framework/11.png"></p>
+<p>那么现在就有一个问题：由 C#编写的程序集，能够引用由 N#编写的程序集吗？答案显然是不能，，虽然 C#和 N#同属于 CTS 旗下，但是它们并没有共通之处。因此，虽然单独的 N#或 C#程序可以完美地在.NET 框架下运行，但是它们之间却无法相互引用。如果使用 N#开发项目的开发者本来就不希望其他语言类型的项目来引用他的项目倒也罢了，但是，如果 N#项目期望其他语言类型的项目能够对它进行引用，就需要 N#中公开的类型和功能满足 C#语言的特性，即它们需要有共通之处。注意，这句话中有一个词很重要，就是“公开的”（public）。N#中不公开的部分（private、internal、protected）是不受影响的，可以使用独有的语言特性，因为这些不公开的部分本来就不允许外部进行访问。因此， 如果 N#想要被 C#所理解和引用，它公开的部分就要满足 C#的一些规范，此时，它与 CTS 和 C#语言的关系就会变成如图</p>
+<p><img src="https://lingme.github.io/image/net_framework/12.png"></p>
+<p>如果世界上仅有 C#和 N#两种语言就好办了，把它们共同的语言特性提取出来，然后要求所有公开的类型都满足这些语言特性，这样 C#和 N#程序集就可以相互引用了。可问题是：语言类型有上百种之多，并且.NET 的设计目标是实现一个开放的平台，不仅现有的语言经过简单修改就可以运行在.NET 框架上，后续开发的新语言也可以，而新语言此时并不存在，如何提取出它的语言特性？因此又需要一套规范和标准来定义一些常见的、大多数语言都共有的语言特性。对于未来的新语言，只要它公开的部分能够满足这些规范，就能够被其他语言的程序集所使用。这个规范就叫做 CLS （Common Language Specification，公共语言规范）。很明显，CLS 是 CTS 的一个子集。现在引入了 CLS</p>
+<p><img src="https://lingme.github.io/image/net_framework/13.png"></p>
+<p>如果利用 C#开发的一个程序集的公开部分仅采用了 CLS 中的特性，那么这个程序集就叫做 CLS 兼容程序集（CLScompliant assembly）。显然，对于上面提到的 FCL 框架类库，其中的类型都符合 CLS，仅有极个别类型的成员不符合 CLS，这就保证了所有面向.NET 的语言都可以使用框架类库中的类型。</p>
+<p>上面几段文字中反复出现了一个词———“语言特性”（language features），满足 CLS 就是要求语言特性要一致，那么什么叫做语言特性？这里给出几个具体的语言特性：是否区分大小写，标识符的命名规则如何，可以使用的基本类型有哪些，构造函数的调用方式（是否会调用基类构造函数），支持的访问修饰符等。</p>
+<p>那么我们如何检验程序集是否符合 CLS 呢？.NET 为我们提供了一个特性 CLSCompliant，便于在编译时检查程序集是否符合 CLS。我创建了一个类，我们来看下面一个例子：</p>
+<p><img src="https://lingme.github.io/image/net_framework/Screen%20Shot%202020-03-01%20at%2012.14.49%20PM.png"></p>
+<p>编译器报出警告</p>
+<blockquote>
+<p>CS3005:仅大小写不同的标识符“CLSTest.Name()”不符合 CLS</p>
+</blockquote>
+<blockquote>
+<p>CS3002:“CLSTest.GetValue()”的返回类型不符合 CLS</p>
+</blockquote>
+<blockquote>
+<p>CS3001:参数类型“sbyte”不符合 CLS</p>
+</blockquote>
+<blockquote>
+<p>CS3008:标识符“CLSTest._aFiled”不符合 CLS</p>
+</blockquote>
+<p>编译器给出的只是警告信息，而非错误信息，因此可以无视编译器的警告，不过这个程序集只能由其他 C#语言编写的程序集所使用</p>
+<h2 id="7-CLR-公共语言运行时"><a href="#7-CLR-公共语言运行时" class="headerlink" title="7. CLR - 公共语言运行时"></a>7. CLR - 公共语言运行时</h2><p>Common Language Runtime</p>
+<hr>
+<p>程序集包含了 CIL 语言代码，而 CIL 语言代码是无法直接运行的，需要经过.NET 运行时进行即时编译才能转换为计算机可以直接执行的机器指令。那么这个过程是如何进行的呢？</p>
+<p>接下来我们要了解的就是.NET 框架的核心部分：CLR（Common Language Runtime），公共语言运行时），有时也会称做.NET 运行时（.NET runtime）。在了解 CLR 之前，需要先进一步学习一下程序集，因为下一节会对程序集进行专门的讲述，这里仅简单介绍一下程序集中对于理解 CLR 有帮助的概念。</p>
+<p>从直觉上来看，前面以.exe 为后缀的控制台应用程序就是一个直接的可执行文件，因为在双击它后，它确实会运行起来。这里的情况和面向对象中的继承有一点像：一台轿车首先是一部机动车、一只猫首先是一个动物，而一个.NET 程序集首先是一个 Windows 可执行程序。</p>
+<p>那么什么样格式的文件才是一个 Windows 可执行文件？这个格式被称做 PE/COFF（Microsoft Windows Portable Executable/Common Object File Format），Windows 可移植可执行/通用对象文件格式。Windows 操作系统能够加载并运行.dll 和.exe 是因为它能够理解 PE/COFF 文件的格式。显然，所有在 Windows 操作系统上运行的程序都需要符合这个格式，当然也包括.NET 程序集在内。在这一级，程序的控制权还属于操作系统，PE/COFF 头包含了供操作系统查看和利用的信息。此时，程序集可以表示成如图</p>
+<p><img src="https://lingme.github.io/image/net_framework/14.png"></p>
+<p>在前面提到过，程序集中包含的 CIL 语言代码并不是计算机可以直接执行的，还需要进行即时编译，那么在对 CIL 语言代码进行编译前，需要先将编译的环境运行起来，因此 PE/COFF 头之后的就是 CLR 头了。CLR 头最重要的作用之一就是告诉操作系统这个 PE/COFF 文件是一个.NET 程序集，区别于其他类型的可执行程序。</p>
+<p><img src="https://lingme.github.io/image/net_framework/15.png"></p>
+<p>在 CLR 头之后就是大家相对熟悉一些的内容了。首先，程序集包含一个清单（manifest），这个清单相当于一个目录，描述了程序集本身的信息，例如程序集标识（名称、版本、文化）、程序集包含的资源（Resources）、组成程序集的文件等。</p>
+<p><img src="https://lingme.github.io/image/net_framework/16.png"></p>
+<p>清单之后就是元数据了。如果说清单描述了程序集自身的信息，那么元数据则描述了程序集所包含的内容。这些内容包括：程序集包含的模块（会在第 7 章介绍）、类型、类型的成员、类型和类型成员的可见性等。注意，元数据并不包含类型的实现，有点类似于 C++中的.h 头文件。在.NET 中，查看元数据的过程就叫做反射（Reflection）</p>
+<p><img src="https://lingme.github.io/image/net_framework/17.png"></p>
+<p>接下来就是已经转换为 CIL 的程序代码了，也就是元数据中类型的实现，包括方法体、字段等，类似于 C++中的.cpp 文件。</p>
+<p><img src="https://lingme.github.io/image/net_framework/18.png"></p>
+<p>图中还多添加了一个资源文件，例如.jpg 图片。从这幅图可以看出，程序集是自解释型的（Self-Description），不再需要任何额外的东西，例如注册表，就可以完整地知道程序集的一切信息。</p>
+<p>现在已经了解过了程序集，并且知道程序集中包含的 CIL 代码并不能直接运行，还需要 CLR 的支持。概括来说，CLR 是一个软件层或代理，它管理了.NET 程序集的执行，主要包括：管理应用程序域、加载和运行程序集、安全检查、将 CIL 代码即时编译为机器代码、异常处理、对象析构和垃圾回收等。相对于编译时（Compile time），这些过程发生在程序运行的过程中，因此，将这个软件层命名为了运行时，实际上它本身与时间是没有太大关系的。有一些朋友在初学.NET 的时候，纠结在了 Runtime 这个词上，总以为和时间有什么关系，总是不能很好地理解 CLR。笔者认为重要的是理解 CLR 是做什么的，而不用过于关注它的名称。</p>
+<p>实际上，CLR 还有一种叫法，即 VES（Virtual Execution System，虚拟执行系统）。从上一段的说明来看，这个命名应该更能描述 CLR 的作用，也不容易引起混淆，但是可能为了和 CIL、CTS、CLS 等术语保持一致性，最后将其命名为了 CLR。在这里，我们知道 CLR 不过是一个.NET 程序集的运行环境而已，有点类似于 Java 虚拟机。VES 这个术语来自于 CLI</p>
+<p><img src="https://lingme.github.io/image/net_framework/19.png"></p>
+<p>前面已经概要地了解了 CLR 的作用，接下来开始更进一步的学习。首先遇到的问题就是：CLR 以什么样的形式位于什么位置？</p>
+<p>由于 CLR 本身用于管理托管代码，因此它是由非托管代码编写的，并不是一个包含了托管代码的程序集，也不能使用 IL DASM 进行查看。它位于 C:%SystemRoot%\Microsoft.NET\Framework\版本号下，视安装的机器不同有两个版本，一个是工作站版本的 mscorwks.dll，一个是服务器版本的 mscorsvr.dll。wks 和 svr 分别代表 work station 和 server。</p>
+<p>接下来再看一下 CLR 是如何运行起来的。虽然从 Windows Server 2003 开始，.NET 框架已经预装在操作系统中，但是它还没有集成为操作系统的一部分。当操作系统尝试打开一个托管程序集（.exe）时，它首先会检查 PE 头，根据 PE 头来创建合适的进程。</p>
+<p>接下来会进一步检查是否存在 CLR 头，如果存在，就会立即载入 MsCorEE.dll。这个库文件是.NET 框架的核心组件之一，注意它也不是一个程序集。MsCorEE.dll 位于 C:%SystemRoot%\System32\系统文件夹下所有安装了.NET 框架的计算机都会有这个文件。大家可能注意到了，这个库安装在 System32 系统文件夹下，而没有像其他的核心组件或类库那样按照版本号存放在 C:%SystemRoot%\Microsoft.NET\Framework\文件夹下。这里又存在一个“鸡生蛋问题”：根据不同的程序集信息会加载不同版本的 CLR，因此加载 CLR 的组件就应该只有一个，不能再根据 CLR 的版本去决定加载 CLR 的组件的版本。</p>
+<p>MsCorEE.dll 是一个很细的软件层。加载了 MsCorEE.dll 之后，会调用其中的_CorExeMain()函数，该函数会加载合适版本的 CLR。在 CLR 运行之后，程序的执行权就交给了 CLR。CLR 会找到程序的入口点，通常是 Main()方法，然后执行它。这里又包含了以下过程：</p>
+<p>加载类型。在执行 Main()方法之前，首先要找到拥有 Main()方法的类型并且加载这个类型。CLR 中一个名为 Class loader（类加载程序）的组件负责这项工作。它会从 GAC、配置文件、程序集元数据中寻找这个类型，然后将它的类型信息加载到内存中的数据结构中。在 Class loader 找到并加载完这个类型之后，它的类型信息会被缓存起来，这样就无需再次进行相同的过程。在加载这个类以后，还会为它的每个方法插入一个存根（stub）。<br>验证。在 CLR 中，还存在一个验证程序（verifier），该验证程序的工作是在运行时确保代码是类型安全的。它主要校验两个方面，一个是元数据是正确的，一个是 CIL 代码必须是类型安全的，类型的签名必须正确。<br>即时编译。这一步就是将托管的 CIL 代码编译为可以执行的机器代码的过程，由 CLR 的即时编译器（JIT Complier）完成。即时编译只有在方法的第一次调用时发生。回想一下，类型加载程序会为每个方法插入一个存根。在调用方法时，CLR 会检查方法的存根，如果存根为空，则执行 JIT 编译过程，并将该方法被编译后的本地机器代码地址写入到方法存根中。当第二次对同一方法进行调用时，会再次检查这个存根，如果发现其保存了本地机器代码的地址，则直接跳转到本地机器代码进行执行，无需再次进行 JIT 编译。<br>可以看出，采用这种架构的一个好处就是，.NET 程序集可以运行在任何平台上，不管是 Windows、UNIX，还是其他操作系统，只要这个平台拥有针对于该操作系统的.NET 框架就可以运行.NET 程序集。</p>
+<h2 id="8-CLI-公共语言基础"><a href="#8-CLI-公共语言基础" class="headerlink" title="8. CLI - 公共语言基础"></a>8. CLI - 公共语言基础</h2><p>Common Language Infrastructure</p>
+<hr>
+<p>CLI 是一个国际标准，由 ECMA 和 ISO 进行了标准化，全称为 Common Language Infrastructure（公共语言基础）。它只是一个概念和汇总，实际上本章的每一小节都是这个标准的一部分。CLI 包括：CIL、CTS、CLS、VES、元数据、基础框架。</p>
+<p>看到这里很多人会感觉到有点奇怪，为什么 CLI 和.NET 框架包含的内容如此雷同？它们之间是什么关系？简单来说，CLI 是一个标准，而.NET 框架是这个标准的具体实现。在 CLI 中，并没有 CLR 的概念，只有 VES，而 CLR 就是.NET 框架中 VES 的具体实现。既然 CLI 只是一个标准，而.NET 框架是它在 Windows 平台上的具体实现，那么是不是就只有.NET 框架这一个 CLI 的实现？显然不是，Mono Project 就是 CLI 标准的另一个实现。Mono Project 的目标就是将.NET 框架多平台化，使其可以运行在各种平台上，包括 Mac OS、Linux 等。</p>
+<p>CLI 的详细信息可以在<a target="_blank" rel="noopener" href="http://www.ecma-international.org/publications/standards/Ecma-335.htm">这里</a>查看.</p>
+<h2 id="9-终章"><a href="#9-终章" class="headerlink" title="9. 终章"></a>9. 终章</h2><p>把上面的知识巩固一下，到底什么是.NET 框架这个问题应该有了答案，对常见的所有术语，例如程序集、CIL、CTS、CLS、CLR 等，大家会对.NET 框架有一个更好的全局性认识。</p>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Dotnet/">Dotnet</a><a class="link-muted mr-2" rel="tag" href="/tags/CSharp/">CSharp</a><a class="link-muted mr-2" rel="tag" href="/tags/CLI/">CLI</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/03/03/TrojanVPS/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Trojan搭建私人VPN</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/01/05/Prism-07-command/"><span class="level-item">Prism Step7 Command</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div class="content" id="valine-thread"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/valine/1.4.14/Valine.min.js"></script><script>new Valine({
+            el: '#valine-thread' ,
+            appId: "qAUouJa9IYIfk3BMvvEMWNPs-gzGzoHsz",
+            appKey: "QFwWDrrTN4TMWILj78u7XdK5",
+            
+            avatar: "mm",
+            avatarForce: true,
+            meta: ["nick","mail"],
+            pageSize: 10,
+            lang: "zh-CN",
+            visitor: true,
+            highlight: true,
+            
+            
+            
+            
+            
+            requiredFields: [],
+        });</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://lingme.github.io/image/blog_love/img_head_round.png" alt="Lingme"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Lingme</p><br><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>ShenZhen, China</span></p></div></div></nav></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/NET/"><span class="level-start"><span class="level-item">.NET</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/CI-CD/"><span class="level-start"><span class="level-item">CI/CD</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/JavaScript/"><span class="level-start"><span class="level-item">JavaScript</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/NodeJS/"><span class="level-start"><span class="level-item">NodeJS</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Prism/"><span class="level-start"><span class="level-item">Prism</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/QT/"><span class="level-start"><span class="level-item">QT</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Script/"><span class="level-start"><span class="level-item">Script</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/WPF/"><span class="level-start"><span class="level-item">WPF</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Project/"><span class="level-start"><span class="level-item">Project</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a><p class="is-size-7"><span>&copy; 2017-2025</span> Lingme Powered by <a href="https://github.com/hexojs/hexo" target="_blank">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Theme based on iCarus" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fas fa-circle-notch"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "block",
+        static: false,
+        position: "bottom-right",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery.min.js" defer></script><script src="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

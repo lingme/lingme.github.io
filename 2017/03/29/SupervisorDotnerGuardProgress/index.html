@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>使用Supervisor创建.NET Core守护进程 - Lingme</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="white"><meta name="application-name" content="Lingme"><meta name="msapplication-TileImage" content="https://lingme.github.io/img/logo.svg"><meta name="msapplication-TileColor" content="white"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Lingme"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" sizes="192x192" href="https://lingme.github.io/img/logo.svg"><meta name="description" content="今天在部署 .NET Core WebAPI 的时候发现一个问题，就是当Linux的Shell停止的时候，我的WebAPI服务也停止了，因为DotNet一直要保持RunTime模式才能让你服务持久化运行，查了一下百度，发现可以通过Linux下的一个服务软件 Supervisor 创建守护进程来持续的让你的服务保持活力。"><meta property="og:type" content="blog"><meta property="og:title" content="使用Supervisor创建.NET Core守护进程"><meta property="og:url" content="https://lingme.github.io/2017/03/29/SupervisorDotnerGuardProgress/"><meta property="og:site_name" content="Lingme"><meta property="og:description" content="今天在部署 .NET Core WebAPI 的时候发现一个问题，就是当Linux的Shell停止的时候，我的WebAPI服务也停止了，因为DotNet一直要保持RunTime模式才能让你服务持久化运行，查了一下百度，发现可以通过Linux下的一个服务软件 Supervisor 创建守护进程来持续的让你的服务保持活力。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://lingme.github.io/img/logo.svg"><meta property="article:published_time" content="2017-03-29T00:03:21.000Z"><meta property="article:modified_time" content="2025-04-07T14:09:39.363Z"><meta property="article:tag" content="Dotnet"><meta property="article:tag" content="Linux"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/logo.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lingme.github.io/2017/03/29/SupervisorDotnerGuardProgress/"},"headline":"Lingme","image":[],"datePublished":"2017-03-29T00:03:21.000Z","dateModified":"2025-04-07T14:09:39.363Z","author":{"@type":"Person","name":null},"description":"今天在部署 .NET Core WebAPI 的时候发现一个问题，就是当Linux的Shell停止的时候，我的WebAPI服务也停止了，因为DotNet一直要保持RunTime模式才能让你服务持久化运行，查了一下百度，发现可以通过Linux下的一个服务软件 Supervisor 创建守护进程来持续的让你的服务保持活力。"}</script><link rel="canonical" href="https://lingme.github.io/2017/03/29/SupervisorDotnerGuardProgress/"><link rel="icon" href="https://lingme.github.io/image/blog_love/img_head_round.png"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/blog">博客</a><a class="navbar-item" href="/categories/Project">项目</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Lingme Monitor" href="https://stats.uptimerobot.com/LnXjpuPj6J/786523787"><i class="fas fa-spider"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2017-03-29T00:03:21.000Z" title="2017-03-29T00:03:21.000Z">2017-03-29</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/NET/">.NET</a></span><span class="level-item">7 分钟读完 (大约1012个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">使用Supervisor创建.NET Core守护进程</h1><div class="content"><p>今天在部署 <strong>.NET Core WebAPI</strong> 的时候发现一个问题，就是当Linux的Shell停止的时候，我的WebAPI服务也停止了，因为DotNet一直要保持RunTime模式才能让你服务持久化运行，查了一下百度，发现可以通过Linux下的一个服务软件 <strong>Supervisor</strong> 创建守护进程来持续的让你的服务保持活力。</p>
+<span id="more"></span>
+
+<h2 id="Supervisor"><a href="#Supervisor" class="headerlink" title="Supervisor"></a>Supervisor</h2><p>supervisor管理进程，是通过fork/exec的方式将这些被管理的进程当作supervisor的子进程来启动，所以我们只需要将要管理进程的可执行文件的路径添加到supervisor的配置文件中就好了。此时被管理进程被视为supervisor的子进程，若该子进程异常中断，则父进程可以准确的获取子进程异常中断的信息，通过在配置文件中设置autostart=ture，可以实现对异常中断的子进程的自动重启。</p>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p>接下来，我以我 <strong>CentOS</strong> 服务器为准，记录如何实现通过 <strong>Supervisor</strong> 创建我们的 <strong>.NET Core</strong> 程序的守护进程。</p>
+<h5 id="1-安装Supervisor"><a href="#1-安装Supervisor" class="headerlink" title="1.安装Supervisor"></a>1.安装Supervisor</h5><p>CentOS以及所有Yum管理包的支持的Linux系统通过这个命令安装Supervisor</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install supervisor</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-创建Supervisor工作目录"><a href="#2-创建Supervisor工作目录" class="headerlink" title="2.创建Supervisor工作目录"></a>2.创建Supervisor工作目录</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /etc/supervisor</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-创建Supervisor配置文件"><a href="#3-创建Supervisor配置文件" class="headerlink" title="3.创建Supervisor配置文件"></a>3.创建Supervisor配置文件</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo_supervisord_conf &gt; /etc/supervisor/supervisord.conf</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-创建任务目录"><a href="#4-创建任务目录" class="headerlink" title="4.创建任务目录"></a>4.创建任务目录</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /etc/supervisor/conf.d</span><br></pre></td></tr></table></figure>
+<h5 id="5-创建配置文件任务目录导入规则"><a href="#5-创建配置文件任务目录导入规则" class="headerlink" title="5.创建配置文件任务目录导入规则"></a>5.创建配置文件任务目录导入规则</h5><p>在4中，我们创建了一个conf.d的任务目录，这个目录里面放的就是我们的守护进程的任务配置，那么如何让<strong>Supervisor</strong> 知道我们的任务来自这个文件夹呢？所以我们还需要配置 <strong>supervisord.conf</strong> 配置文件，导入我们的任务目录</p>
+<p>首先：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/supervisor/supervisord.conf</span><br></pre></td></tr></table></figure>
+<p>在结尾处添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[include]</span><br><span class="line">files=conf.d/*.conf</span><br></pre></td></tr></table></figure>
+<p>这样 <strong>Supervisor</strong> 就知道我们的任务来自于这个文件夹，当然这里我是相对路径，你也可以写绝对路径</p>
+<h5 id="6-创建守护进程配置文件"><a href="#6-创建守护进程配置文件" class="headerlink" title="6.创建守护进程配置文件"></a>6.创建守护进程配置文件</h5><p>首先在4中创建的目录下，我们创建一个 <strong>xxx.conf</strong> 的文件，这个文件就是我们的守护进程详细配置了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch test.conf</span><br></pre></td></tr></table></figure>
+<p>然后我们配置一下</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[program:test]</span></span><br><span class="line"><span class="attr">command</span>=dotnet TestCore.dll</span><br><span class="line"><span class="attr">directory</span>=/home/lingmin/TestService</span><br><span class="line"><span class="attr">environment</span>=ASPNETCORE__ENVIRONMENT=Production</span><br><span class="line"><span class="attr">user</span>=root </span><br><span class="line"><span class="attr">stopsignal</span>=INT</span><br><span class="line"><span class="attr">autostart</span>=<span class="literal">true</span> </span><br><span class="line"><span class="attr">autorestart</span>=<span class="literal">true</span> </span><br><span class="line"><span class="attr">startsecs</span>=<span class="number">1</span> </span><br><span class="line"><span class="attr">stderr_logfile</span>=/var/log/common.err.log</span><br><span class="line"><span class="attr">stdout_logfile</span>=/var/log/common.out.log </span><br></pre></td></tr></table></figure>
+<p>这里说明一下 <strong>参数</strong></p>
+<table>
+<thead>
+<tr>
+<th>参 数</th>
+<th>说 明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>command</td>
+<td>动作，需要执行的命令，dontnet的命令</td>
+</tr>
+<tr>
+<td>directory</td>
+<td>执行动作的目录，也就是我们发布.NET Core程序的目录</td>
+</tr>
+<tr>
+<td>user</td>
+<td>执行命令的用户</td>
+</tr>
+<tr>
+<td>environment</td>
+<td>环境变量，我也没搞懂，保持默认吧</td>
+</tr>
+<tr>
+<td>autostart</td>
+<td>是否自动随系统启动</td>
+</tr>
+<tr>
+<td>autorestart</td>
+<td>遇到问题是否自动重启</td>
+</tr>
+<tr>
+<td>startsecs</td>
+<td>自动重启间隔时间，单位：秒</td>
+</tr>
+<tr>
+<td>stderr_logfile</td>
+<td>错误日志文件保存目录</td>
+</tr>
+<tr>
+<td>stdout_logfile</td>
+<td>输出日志文件保存目录</td>
+</tr>
+</tbody></table>
+<h5 id="7-制定Supervisor配置文件"><a href="#7-制定Supervisor配置文件" class="headerlink" title="7.制定Supervisor配置文件"></a>7.制定Supervisor配置文件</h5><p>因为 <strong>Supervisor</strong> 默认的配置文件其实在 <strong>/etc/supervisord.conf</strong> 这个文件中，所以我们需要制定我们在3中创建的配置文件为Supervisor的默认配置。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisord -c /etc/supervisor/supervisord.conf</span><br></pre></td></tr></table></figure>
+<p>这样我们就指定了我们的配置文件</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>我们在7中制定我们的配置文件的时候，可能会遇到</p>
+<ul>
+<li>Error: Another program is already listening on a port that one of our HTTP servers is configured to use.  Shut this program down first before starting supervisord.<br>For help, use /usr/bin/supervisord -h</li>
+</ul>
+<p>这个错误，这个错误是说我们Supervisor已经在运行了，不能指定配置</p>
+<p>所以我们可以通过输入这个命令，来暂时关闭掉 <strong>Supervisor</strong> 的sock通道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unlink /tmp/supervisor.sock</span><br></pre></td></tr></table></figure>
+
+<p>然后再输入7中的命令，就可以正常运行了</p>
+<h2 id="服务操作（关闭和启动）"><a href="#服务操作（关闭和启动）" class="headerlink" title="服务操作（关闭和启动）"></a>服务操作（关闭和启动）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">supervisord -c /etc/supervisor/supervisord.conf  启动</span><br><span class="line">supervisorctl stop all</span><br><span class="line"></span><br><span class="line">ps -le | grep supervisord</span><br><span class="line">ps aux | less</span><br><span class="line">kill pid</span><br></pre></td></tr></table></figure></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Dotnet/">Dotnet</a><a class="link-muted mr-2" rel="tag" href="/tags/Linux/">Linux</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2017/04/02/LinuxGrubConfigEdit/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Linux的GRUB2启动文件修改</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2017/03/23/GnomeDesktopAddApplicationFolder/"><span class="level-item">Gnome3桌面环境添加应用文件夹</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div class="content" id="valine-thread"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/valine/1.4.14/Valine.min.js"></script><script>new Valine({
+            el: '#valine-thread' ,
+            appId: "qAUouJa9IYIfk3BMvvEMWNPs-gzGzoHsz",
+            appKey: "QFwWDrrTN4TMWILj78u7XdK5",
+            
+            avatar: "mm",
+            avatarForce: true,
+            meta: ["nick","mail"],
+            pageSize: 10,
+            lang: "zh-CN",
+            visitor: true,
+            highlight: true,
+            
+            
+            
+            
+            
+            requiredFields: [],
+        });</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://lingme.github.io/image/blog_love/img_head_round.png" alt="Lingme"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Lingme</p><br><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>ShenZhen, China</span></p></div></div></nav></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/NET/"><span class="level-start"><span class="level-item">.NET</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/CI-CD/"><span class="level-start"><span class="level-item">CI/CD</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/JavaScript/"><span class="level-start"><span class="level-item">JavaScript</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/NodeJS/"><span class="level-start"><span class="level-item">NodeJS</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Prism/"><span class="level-start"><span class="level-item">Prism</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/QT/"><span class="level-start"><span class="level-item">QT</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Script/"><span class="level-start"><span class="level-item">Script</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/WPF/"><span class="level-start"><span class="level-item">WPF</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Project/"><span class="level-start"><span class="level-item">Project</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a><p class="is-size-7"><span>&copy; 2017-2025</span> Lingme Powered by <a href="https://github.com/hexojs/hexo" target="_blank">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Theme based on iCarus" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fas fa-circle-notch"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "block",
+        static: false,
+        position: "bottom-right",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery.min.js" defer></script><script src="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

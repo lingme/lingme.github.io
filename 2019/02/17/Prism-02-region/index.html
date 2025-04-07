@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Prism Step2 Regions - Lingme</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="white"><meta name="application-name" content="Lingme"><meta name="msapplication-TileImage" content="https://lingme.github.io/img/logo.svg"><meta name="msapplication-TileColor" content="white"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Lingme"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" sizes="192x192" href="https://lingme.github.io/img/logo.svg"><meta name="description" content="Prism 可以帮助我们开发模块化程序，将程序分割成一个个独立的 Module，分别进行开发。然后在程序运行的时候，将各个 Module 组合到一起，为程序提供各种各样的功能。通常来说，Module 是一些视图和功能的集合，那么就需要一种办法来将这些视图以某种形式，在特定的时间展现出来。Prism 通过 Shell + Region 来组织视图的布局，完成视图间的转换等。"><meta property="og:type" content="blog"><meta property="og:title" content="Prism Step2 Regions"><meta property="og:url" content="https://lingme.github.io/2019/02/17/Prism-02-region/"><meta property="og:site_name" content="Lingme"><meta property="og:description" content="Prism 可以帮助我们开发模块化程序，将程序分割成一个个独立的 Module，分别进行开发。然后在程序运行的时候，将各个 Module 组合到一起，为程序提供各种各样的功能。通常来说，Module 是一些视图和功能的集合，那么就需要一种办法来将这些视图以某种形式，在特定的时间展现出来。Prism 通过 Shell + Region 来组织视图的布局，完成视图间的转换等。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://lingme.github.io/image/temp_img/5Sw5ZtG.jpg"><meta property="article:published_time" content="2019-02-17T00:03:21.000Z"><meta property="article:modified_time" content="2025-04-07T14:09:39.362Z"><meta property="article:tag" content="Dotnet"><meta property="article:tag" content="CSharp"><meta property="article:tag" content="Prism"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://lingme.github.io/image/temp_img/5Sw5ZtG.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lingme.github.io/2019/02/17/Prism-02-region/"},"headline":"Lingme","image":["https://lingme.github.io/image/temp_img/5Sw5ZtG.jpg"],"datePublished":"2019-02-17T00:03:21.000Z","dateModified":"2025-04-07T14:09:39.362Z","author":{"@type":"Person","name":null},"description":"Prism 可以帮助我们开发模块化程序，将程序分割成一个个独立的 Module，分别进行开发。然后在程序运行的时候，将各个 Module 组合到一起，为程序提供各种各样的功能。通常来说，Module 是一些视图和功能的集合，那么就需要一种办法来将这些视图以某种形式，在特定的时间展现出来。Prism 通过 Shell + Region 来组织视图的布局，完成视图间的转换等。"}</script><link rel="canonical" href="https://lingme.github.io/2019/02/17/Prism-02-region/"><link rel="icon" href="https://lingme.github.io/image/blog_love/img_head_round.png"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/blog">博客</a><a class="navbar-item" href="/categories/Project">项目</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Lingme Monitor" href="https://stats.uptimerobot.com/LnXjpuPj6J/786523787"><i class="fas fa-spider"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="https://lingme.github.io/image/temp_img/5Sw5ZtG.jpg" alt="Prism Step2 Regions"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-02-17T00:03:21.000Z" title="2019-02-17T00:03:21.000Z">2019-02-17</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Prism/">Prism</a></span><span class="level-item">8 分钟读完 (大约1127个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Prism Step2 Regions</h1><div class="content"><p>Prism 可以帮助我们开发模块化程序，将程序分割成一个个独立的 Module，分别进行开发。然后在程序运行的时候，将各个 Module 组合到一起，为程序提供各种各样的功能。通常来说，Module 是一些视图和功能的集合，那么就需要一种办法来将这些视图以某种形式，在特定的时间展现出来。Prism 通过 Shell + Region 来组织视图的布局，完成视图间的转换等。</p>
+<span id="more"></span>
+
+<p>Shell 相当于 ASP.NET 中的母版页，它定义了页面的布局、主题等。其中的导航区和内容区是预留出来的需要进行填充内容的部分，也就是 Region，起到占位符的作用，程序会在运行时动态地向 Region 中填充内容。</p>
+<p>那么如何将一个区域定义为 Region 呢？</p>
+<p>首先在引入 Prism 的命名空间</p>
+<blockquote>
+<p>xmlns:prism=”<a target="_blank" rel="noopener" href="http://www.codeplex.com/prism&quot;">http://www.codeplex.com/prism&quot;</a></p>
+</blockquote>
+<p>如果 IDE 无法找到这个命名空间的话，需要先注册 Prism，然后在需要定义为 Region 的控件上加上 Attached Property。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;ContentControl prism:RegionManager.RegionName=<span class="string">&quot;MainRegion&quot;</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>并不是所有的控件都可以作为 Region 的，需要为需要定义为 Region 的控件添加 RegionAdapter。RegionAdapter 的作用是为特定的控件创建相应的 Region，并将控件与 Region 进行绑定，然后为 Region 添加一些行为。一个 RegionAdapter 需要实现 IRegionAdapter 接口，如果你需要自定义一个 RegionAdapter，可以通过继承 RegionAdapterBase 类来省去一些工作。Prism 为 Silverlight 提供了几个 RegionAdapter：</p>
+<blockquote>
+<p>ContentControlRegionAdapter<br>创建一个 SingleActiveRegion 并将其与 ContentControl 绑定</p>
+</blockquote>
+<blockquote>
+<p>ItemsControlRegionAdapter<br>创建一个 AllActiveRegion 并将其与 ItemsControl 绑定</p>
+</blockquote>
+<blockquote>
+<p>SelectorRegionAdapter<br>创建一个 Region 并将其与 Selector 绑定</p>
+</blockquote>
+<blockquote>
+<p>TabControlRegionAdapter<br>创建一个 Region 并将其与 TabControl 绑定</p>
+</blockquote>
+<p>通常我们并不直接和 Region 打交道，而是通过 RegionManager，它实现了 IRegionManager 接口。IRegionManager 接口包含一个只读属性 Regions，是 Region 的集合，还有一个 CreateRegionManager 方法。Prism 通过 RegionManagerExtensions 类使用扩展方法为 IRegionManager 添加了更多的功能。</p>
+<blockquote>
+<p>AddToRegion<br>将一个视图添加到一个 Region 中。</p>
+</blockquote>
+<blockquote>
+<p>RegisterViewWithRegion<br>将一个视图和一个 Region 进行关联。当 Region 显示的时候，关联的视图才会显示，也就是说，在这个 Region 显示之前，关联的视图是不会被创建的。</p>
+</blockquote>
+<blockquote>
+<p>RequestNavigate<br>进行页面切换，将指定的 Region 中显示的视图切换为指定的视图。</p>
+</blockquote>
+<p>本文开头说过，需要在运行时将分散在各个 Module 的视图显示在页面特定的位置上。那么首先就需要定义页面显示的地方，即 Region。然后就是要定义创建视图的时机和方式。在 Prism 中有两种方式来定义视图与 Region 之间的映射关系——View Discovery 和 View Injection。</p>
+<p>如果一个页面相对来说不大变化，如导航区，在程序初始化的过程完成后就不会轻易地变动，这时候就较适合于使用 RegisterViewWithRegion 方法，通常可以在 Module 的 Initialize 方法中完成这个过程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public <span class="type">void</span> <span class="title function_">Initialize</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    logger.Log(<span class="string">&quot;初始化Navigation模块&quot;</span>, Category.Debug, Priority.Low);</span><br><span class="line">    _regionManager.RegisterViewWithRegion(RegionNames.NavRegion, <span class="keyword">typeof</span>(NavigationItem));</span><br><span class="line">    _regionManager.RegisterViewWithRegion(RegionNames.MainRegion, <span class="comment">// 两种方式都可以</span></span><br><span class="line">                                            () =&gt; _container.Resolve&lt;NavigationContainer&gt;() );</span><br><span class="line">    _regionManager.RegisterViewWithRegion(RegionNames.NavDemoActionRegion, <span class="keyword">typeof</span>(ActionController));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果一个区域需要频繁地切换页面的话，如主内容区，可以使用 View Injection 的方式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">IRegionManager regionManager = ...;</span><br><span class="line">IRegion mainRegion = regionManager.Regions[<span class="string">&quot;MainRegion&quot;</span>];</span><br><span class="line">InboxView view = this.container.Resolve&lt;InboxView&gt;();</span><br><span class="line">mainRegion.Add(view);</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，这时候已经生成了视图的实例。之前提到过，一个 Region 可以包含多个视图，这些视图会处于不同的状态，对于 ItemsControl 类型的 Region 来说，里面会显示很多个 Item，所以添加进去就可以了；但是对于 ContentControl 这种 Region，同一时刻只能显示一个视图，所以在添加进去之后还需要有一个 Activate 的过程。</p>
+<p>使用 URI 来进行导航只需要提供需要切换的视图的名称就可以，并不需要了解视图的类型，从而达到解耦的目的，并且可以通过 URI 来进行参数传递。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public <span class="type">void</span> <span class="title function_">Initialize</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    _container.RegisterType&lt;object, ViewA&gt;(ViewNames.ViewA);</span><br><span class="line">    _container.RegisterType&lt;object, ViewB&gt;(ViewNames.ViewB);</span><br><span class="line">    _container.RegisterType&lt;object, ViewC&gt;(ViewNames.ViewC);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Dotnet/">Dotnet</a><a class="link-muted mr-2" rel="tag" href="/tags/CSharp/">CSharp</a><a class="link-muted mr-2" rel="tag" href="/tags/Prism/">Prism</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2019/02/19/Prism-03-customsregions/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Prism Step3 CustomRegions</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2019/02/10/Xamarin-listview/"><span class="level-item">Xamarin Android ListView</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div class="content" id="valine-thread"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/valine/1.4.14/Valine.min.js"></script><script>new Valine({
+            el: '#valine-thread' ,
+            appId: "qAUouJa9IYIfk3BMvvEMWNPs-gzGzoHsz",
+            appKey: "QFwWDrrTN4TMWILj78u7XdK5",
+            
+            avatar: "mm",
+            avatarForce: true,
+            meta: ["nick","mail"],
+            pageSize: 10,
+            lang: "zh-CN",
+            visitor: true,
+            highlight: true,
+            
+            
+            
+            
+            
+            requiredFields: [],
+        });</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://lingme.github.io/image/blog_love/img_head_round.png" alt="Lingme"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Lingme</p><br><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>ShenZhen, China</span></p></div></div></nav></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/NET/"><span class="level-start"><span class="level-item">.NET</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/CI-CD/"><span class="level-start"><span class="level-item">CI/CD</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/JavaScript/"><span class="level-start"><span class="level-item">JavaScript</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/NodeJS/"><span class="level-start"><span class="level-item">NodeJS</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Prism/"><span class="level-start"><span class="level-item">Prism</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/QT/"><span class="level-start"><span class="level-item">QT</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Script/"><span class="level-start"><span class="level-item">Script</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/WPF/"><span class="level-start"><span class="level-item">WPF</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Project/"><span class="level-start"><span class="level-item">Project</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a><p class="is-size-7"><span>&copy; 2017-2025</span> Lingme Powered by <a href="https://github.com/hexojs/hexo" target="_blank">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Theme based on iCarus" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fas fa-circle-notch"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "block",
+        static: false,
+        position: "bottom-right",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery.min.js" defer></script><script src="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

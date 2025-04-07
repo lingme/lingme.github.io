@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Gnome3桌面环境添加应用文件夹 - Lingme</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="white"><meta name="application-name" content="Lingme"><meta name="msapplication-TileImage" content="https://lingme.github.io/img/logo.svg"><meta name="msapplication-TileColor" content="white"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Lingme"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" sizes="192x192" href="https://lingme.github.io/img/logo.svg"><meta name="description" content="前几天安装完 Wine 以后，发现 Gnome 桌面的应用窗口已经不能看了，各种被 WIne 的图标霸占，而且特别杂，显得非常凌乱，我就想能不能自己创建一个 Wine 文件夹，然后把他们全放进去，但是 Gnome 好像不支持拖拽重叠生成文件夹，通过 WIKI，发现了 gsettings 命令方法："><meta property="og:type" content="blog"><meta property="og:title" content="Gnome3桌面环境添加应用文件夹"><meta property="og:url" content="https://lingme.github.io/2017/03/23/GnomeDesktopAddApplicationFolder/"><meta property="og:site_name" content="Lingme"><meta property="og:description" content="前几天安装完 Wine 以后，发现 Gnome 桌面的应用窗口已经不能看了，各种被 WIne 的图标霸占，而且特别杂，显得非常凌乱，我就想能不能自己创建一个 Wine 文件夹，然后把他们全放进去，但是 Gnome 好像不支持拖拽重叠生成文件夹，通过 WIKI，发现了 gsettings 命令方法："><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://lingme.github.io/image/temp_img/03_1561030874695.jpg"><meta property="article:published_time" content="2017-03-23T00:03:21.000Z"><meta property="article:modified_time" content="2025-04-07T14:09:39.361Z"><meta property="article:tag" content="Gnome"><meta property="article:tag" content="Linux"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://lingme.github.io/image/temp_img/03_1561030874695.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://lingme.github.io/2017/03/23/GnomeDesktopAddApplicationFolder/"},"headline":"Lingme","image":["https://lingme.github.io/image/temp_img/03_1561030874695.jpg"],"datePublished":"2017-03-23T00:03:21.000Z","dateModified":"2025-04-07T14:09:39.361Z","author":{"@type":"Person","name":null},"description":"前几天安装完 Wine 以后，发现 Gnome 桌面的应用窗口已经不能看了，各种被 WIne 的图标霸占，而且特别杂，显得非常凌乱，我就想能不能自己创建一个 Wine 文件夹，然后把他们全放进去，但是 Gnome 好像不支持拖拽重叠生成文件夹，通过 WIKI，发现了 gsettings 命令方法："}</script><link rel="canonical" href="https://lingme.github.io/2017/03/23/GnomeDesktopAddApplicationFolder/"><link rel="icon" href="https://lingme.github.io/image/blog_love/img_head_round.png"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/blog">博客</a><a class="navbar-item" href="/categories/Project">项目</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Lingme Monitor" href="https://stats.uptimerobot.com/LnXjpuPj6J/786523787"><i class="fas fa-spider"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="https://lingme.github.io/image/temp_img/03_1561030874695.jpg" alt="Gnome3桌面环境添加应用文件夹"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2017-03-23T00:03:21.000Z" title="2017-03-23T00:03:21.000Z">2017-03-23</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a></span><span class="level-item">8 分钟读完 (大约1273个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Gnome3桌面环境添加应用文件夹</h1><div class="content"><p>前几天安装完 Wine 以后，发现 Gnome 桌面的应用窗口已经不能看了，各种被 WIne 的图标霸占，而且特别杂，显得非常凌乱，我就想能不能自己创建一个 Wine 文件夹，然后把他们全放进去，但是 Gnome 好像不支持拖拽重叠生成文件夹，通过 WIKI，发现了 gsettings 命令方法：</p>
+<span id="more"></span>
+
+<p><strong>以下是 Gnome For WIKI 原文：</strong></p>
+<blockquote>
+<p>It should return and empty square brackets list. If not, you may wish to add the content of this list to your new list in the following commands instead of replacing it.<br>To add the folders, proceed as follow:<br><strong>gsettings set org.gnome.desktop.app-folders folder-children “[‘AppFolderName’]”</strong><br>What if you want almost all applications in one or more categories except few of them? You can simply specify an exclusion list using the key excluded-apps. For example, suppose we want to exclude Acrobat Reader from the Office folder:<br><strong>gsettings set ‘org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/AppFolderName/‘ apps “[‘gnome-maps.desktop’]”</strong></p>
+</blockquote>
+<p>他是首先通过<strong>gsettings</strong>指令向<strong>org.gnome.desktop.app-folders</strong>这个 XML 标记文件读取一下结构，（有兴趣研究一下这个 XML 的同学请跳转到：**/usr/share/glib-2.0/schemas/org.gnome.desktop.app-folders.xml）**，然后再写入到 Gnome-dconf”类 WIndows 注册表中”，然后通过 gsettings ………apps 这个命令向文件夹中添加程序。</p>
+<p>但是我发现这种方法好像并不是很灵活，像删除、重命名、文件夹图标等等都没有说明，于是还是我自己研究一下把。</p>
+<h5 id="我的方法"><a href="#我的方法" class="headerlink" title="我的方法"></a>我的方法</h5><p>是首先通过打开<strong>dconf-editor</strong>，搜索 WIKI 中所说的那个 xml 文件<strong>org.gnome.desktop.app-folders</strong><br>结果如下：<br><img src="https://lingme.github.io/image/Gnome3%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%B9/1.png"></p>
+<p>是不是很眼熟，Utilities 也就是 Gnome 默认的杂项文件夹，而 Sundry 就是工具文件夹，有了这个思路，是不是往<strong>Folder-children</strong>里面添加 项 就能创建文件了，答案是：不是，无论怎么添加。</p>
+<p><img src="https://lingme.github.io/image/Gnome3%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%B9/2.png"></p>
+<p>在下面的 folder 节点中都不会出现你创建的 文件夹 项名，已经对应的项 名称 和 值。</p>
+<h6 id="再次-google-WIKI，发现了另一种方法："><a href="#再次-google-WIKI，发现了另一种方法：" class="headerlink" title="再次 google-WIKI，发现了另一种方法："></a>再次 google-WIKI，发现了另一种方法：</h6><p><img src="https://lingme.github.io/image/Gnome3%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%B9/3.png"></p>
+<p>1。通过 Gnome 自带的软件商店，点击已安装，然后点击右上角的勾号，选中一个软件后，点击左下角的添加到目录以后，点击 “+”号后，就能创建一个文件夹，而且会出现在 dconf 的 folder 节点下，根据其余两个自带文件夹的创建规则，我们需要打开 terminal。<br><img src="https://lingme.github.io/image/Gnome3%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%B9/4.png"></p>
+<p>2。然后转到 <strong>/usr/share/desktop-directories</strong> 这个目录下，创建一个 xxxx.directory 文件，然后写入如下：<br><img src="https://lingme.github.io/image/Gnome3%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%B9/5.png"></p>
+<blockquote>
+<p><strong>[Desktop Entry]</strong> &gt; <strong>Name=Zwin</strong> #主名称<br><strong>Name[zh_CN]=组件 1</strong> #简体中文的名称<br><strong>Icon=applications-other</strong> #应用文件夹图标，可以是绝对路径的图标，<br><strong>applications-other</strong> #就会像自带的那样显示文 件夹中应用的缩略图。<br><strong>Type=Directory</strong> #类型 Directory 项文件</p>
+</blockquote>
+<p>3.创建完成以后，我们打开 dconf-editor，跳转到 <strong>org/gnome/desktop/app-folders/folders</strong><br>然后打开用 gnome 应用商店中创建的那个项。<br>参数解释如下：</p>
+<p><img src="https://lingme.github.io/image/Gnome3%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%B9/6.png"></p>
+<blockquote>
+<p><strong>apps</strong><br>需要放入这个文件夹的应用名称，详细参考：/usr/share/applications 目录中所有应用的 desktop 文件名称，格式 [‘xxxxxx0.desktop’, ‘xxxxxxx1.desktop’,’xxxxxxx2.desktop’]</p>
+</blockquote>
+<blockquote>
+<p><strong>categories</strong><br>这个类别名称，填写第二步中创建的 directory 文件的名称即可，不需要带后缀名</p>
+</blockquote>
+<blockquote>
+<p><strong>excluded-apps</strong><br>默认[]即可</p>
+</blockquote>
+<blockquote>
+<p><strong>name</strong><br>填写 directory 文件的全名，带后缀名。</p>
+</blockquote>
+<blockquote>
+<p><strong>translate</strong><br>转化，勾选。</p>
+</blockquote>
+<p>这样就创建完成了，以后需要添加或者删减文件夹中的应用，用 dconf 修改 apps 项即可，如果需要改变应用文件夹的图标，名称，修改 <strong>/usr/share/desktop-directories/directory</strong>文件即可，不想要这个应用文件夹了，在 dconf 中删除 apps 项中的所有，然后删除 directory 文件即可。</p>
+<p><img src="https://lingme.github.io/image/Gnome3%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%B9/7.png"></p>
+<p><img src="https://lingme.github.io/image/Gnome3%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E6%96%87%E4%BB%B6%E5%A4%B9/8.jpg"></p>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Gnome/">Gnome</a><a class="link-muted mr-2" rel="tag" href="/tags/Linux/">Linux</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2017/03/29/SupervisorDotnerGuardProgress/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">使用Supervisor创建.NET Core守护进程</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2017/03/12/ProgramSingletonMode/"><span class="level-item">程序单进程实例</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div class="content" id="valine-thread"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/valine/1.4.14/Valine.min.js"></script><script>new Valine({
+            el: '#valine-thread' ,
+            appId: "qAUouJa9IYIfk3BMvvEMWNPs-gzGzoHsz",
+            appKey: "QFwWDrrTN4TMWILj78u7XdK5",
+            
+            avatar: "mm",
+            avatarForce: true,
+            meta: ["nick","mail"],
+            pageSize: 10,
+            lang: "zh-CN",
+            visitor: true,
+            highlight: true,
+            
+            
+            
+            
+            
+            requiredFields: [],
+        });</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://lingme.github.io/image/blog_love/img_head_round.png" alt="Lingme"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Lingme</p><br><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>ShenZhen, China</span></p></div></div></nav></div></div><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/NET/"><span class="level-start"><span class="level-item">.NET</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/CI-CD/"><span class="level-start"><span class="level-item">CI/CD</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/JavaScript/"><span class="level-start"><span class="level-item">JavaScript</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/NodeJS/"><span class="level-start"><span class="level-item">NodeJS</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Prism/"><span class="level-start"><span class="level-item">Prism</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/QT/"><span class="level-start"><span class="level-item">QT</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Script/"><span class="level-start"><span class="level-item">Script</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/WPF/"><span class="level-start"><span class="level-item">WPF</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Project/"><span class="level-start"><span class="level-item">Project</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Lingme" height="28"></a><p class="is-size-7"><span>&copy; 2017-2025</span> Lingme Powered by <a href="https://github.com/hexojs/hexo" target="_blank">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Theme based on iCarus" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fas fa-circle-notch"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="View my GitHub" href="https://github.com/lingme"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "block",
+        static: false,
+        position: "bottom-right",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery.min.js" defer></script><script src="https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
