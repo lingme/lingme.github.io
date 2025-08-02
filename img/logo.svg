@@ -1,0 +1,33 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="256.000000pt" height="228.000000pt" viewBox="0 0 256.000000 228.000000"
+ preserveAspectRatio="xMidYMid meet">
+<defs>
+    <linearGradient id="orange_red" x1="0%" y1="0%" x2="0%" y2="100%">
+         <stop offset="0%" stop-color="#2366d1"/>
+         <stop offset="100%" stop-color="#609dff"/>
+    </linearGradient>
+
+    <linearGradient id="paint0_linear" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop stop-color="#6A98F0"/>
+        <stop offset="1" stop-color="#4961DC"/>
+    </linearGradient>
+
+    <linearGradient id="paint1_linear" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop stop-color="#6A98F0"/>
+        <stop offset="1" stop-color="#4961DC"/>
+    </linearGradient>
+</defs>
+<g transform="translate(0.000000,228.000000) scale(0.100000,-0.100000)"
+stroke="none">
+<path fill="url(#paint0_linear)" d="M0 1425 l0 -860 285 -285 285 -285 0 860 0 860 -285 285 -285 285 0
+-860z"/>
+<path fill="url(#paint1_linear)" d="M710 1795 l0 -490 285 -285 285 -285 0 195 0 195 175 -175 175 -175
+175 175 175 175 0 -565 0 -565 284 285 284 285 6 858 c4 520 2 857 -3 857 -5
+0 -213 -207 -462 -460 l-453 -460 -463 462 -463 463 0 -490z"/>
+<path fill="url(#paint0_linear)" d="M710 850 l0 -285 285 -285 285 -285 0 285 0 285 -285 285 -285 285 0
+-285z"/>
+</g>
+</svg>
